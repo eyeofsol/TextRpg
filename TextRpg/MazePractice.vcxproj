@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{90144a02-61a7-43e5-bca7-b2c459d46d97}</ProjectGuid>
-    <RootNamespace>TextRpg</RootNamespace>
+    <ProjectGuid>{fff9c92d-4777-43fb-bc17-50f1d5403810}</ProjectGuid>
+    <RootNamespace>MazePractice</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -147,9 +147,6 @@
     <ClInclude Include="Position.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="Zombie.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Data\MapData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
