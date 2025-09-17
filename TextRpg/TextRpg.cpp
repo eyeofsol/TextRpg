@@ -2,7 +2,7 @@
 #include<iostream>
 #include<stdio.h>
 #include<fstream>
-#include"Maze.h"
+#include"TextRpg.h"
 #include"GameManager.h"
 
 int main()

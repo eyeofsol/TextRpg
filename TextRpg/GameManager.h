@@ -95,12 +95,17 @@ public:
 	/// 미로를 출력하는 함수
 	/// </summary>
 	/// <param name="pPlayer">플레이어 구조체</param>
-	void PrintMaze(Position& position);
+	void PrintMaze(Position& position1, Position& position2);
 	/// <summary>
 	/// 시작 위치를 설정하는 함수
 	/// </summary>
 	/// <param name="pPlayer">플레이어 구조체</param>
 	void FindStartPosition(Position& OutPosition);
+	/// <summary>
+	/// 몬스터의 시작 위치를 설정하는 함수
+	/// </summary>
+	/// <param name="pPlayer">몬스터 구조체</param>
+	void InitializeMonster(Position& OutPositions);
 	/// <summary>
 	/// 이동할 수 있는 방향을 탐색하는 함수
 	/// </summary>
@@ -120,6 +125,12 @@ public:
 	/// <param name="pPlayer">플레이어 구조체</param>
 	/// <returns>출구 도달 여부</returns>
 	bool IsEnd(Position& position);
+	/// <summary>
+	/// 플레이어가 적을 만났는지 확인하는 여부
+	/// </summary>
+	/// <param name="pPlayer">플레이어 구조체</param>
+	/// <returns>적 출현 여부</returns>
+	bool IsBattle(Position& position);
 	/// <summary>
 	/// 비트플래그 연산을 통해 이동 방향을 계산하는 함수
 	/// </summary>

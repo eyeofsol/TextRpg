@@ -126,7 +126,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Goblin.cpp" />
-    <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="TextRpg.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Orc.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -139,7 +139,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Goblin.h" />
     <ClInclude Include="ICanBattle.h" />
-    <ClInclude Include="Maze.h" />
+    <ClInclude Include="TextRpg.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Orc.h" />
     <ClInclude Include="Player.h" />

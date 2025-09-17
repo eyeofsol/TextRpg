@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Position.h"
 #include "Actor.h"
 
 // 실습 과제
@@ -19,12 +20,14 @@ public:
 	{
 	}
 	virtual void Attack() override;
-	virtual void Skill(ICanBattle* InTarget) = 0;
+	virtual void Skill(ICanBattle* InTarget) {};
 
 	inline int GetDropGold() const { return DropGold; }
+	inline Position& GetPosition() { return CurrentPosition; }
 
 	virtual ~Monster() {}
 protected:
+	Position CurrentPosition = Position(0, 0);
 	int DropGold = 10;
 };
 

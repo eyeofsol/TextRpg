@@ -18,20 +18,26 @@ void GameManager::InitializeMaze()
 void GameManager::MazeEscapeRun()
 {
 	APlayer player("플레이어", 100.0f, 20.0f);
+	Monster rMonster("적", 0.0f, 0.0f);
 
 	FindStartPosition(player.GetPosition());
+	InitializeMonster(rMonster.GetPosition());
 
 	printf("~~ 미로 탈출 게임 ~~\n");
 
 	while (player.GetHealth() > 0)
 	{
-		PrintMaze(player.GetPosition());
-
 		if (IsEnd(player.GetPosition()))
 		{
 			printf("축하합니다! 미로를 탈출했습니다.\n");
 			break;
 		}
+		//if (IsBattle(player.GetPosition()))
+		//{
+		//	printf("적을 만났습니다. 전투를 시작합니다.\n");
+		//	BattleEvent(player);
+		//}
+		PrintMaze(player.GetPosition(), rMonster.GetPosition());
 
 		int MoveFlags = PrintAvailableMoves(player.GetPosition());
 		MoveDirection Direction = GetMoveInput(MoveFlags);
@@ -57,15 +63,6 @@ void GameManager::MazeEscapeRun()
 
 
 		MoveEventProcess(player);
-	}
-
-	if (player.GetHealth() >= 0)
-	{
-		// 게임 클리어
-	}
-	else
-	{
-		// 게임 오버
 	}
 }
 
@@ -202,14 +199,16 @@ void GameManager::ParseLineData(const char* LineData, int ArraySize, int* OutArr
 	}
 }
 
-void GameManager::PrintMaze(Position& position)
+void GameManager::PrintMaze(Position& position1, Position& position2)
 {
 	for (int y = 0; y < MazeHeight; y++)
 	{
 		for (int x = 0; x < MazeWidth; x++)
 		{
-			if (position.x == x && position.y == y)
+			if (position1.x == x && position1.y == y)
 				printf("P ");
+			else if(position2.x == x && position2.y == y)
+				printf("M ");
 			else if (Maze[y][x] == MazeTile::Wall)
 				printf("# ");
 			else if (Maze[y][x] == MazeTile::Path)
@@ -234,6 +233,24 @@ void GameManager::FindStartPosition(Position& OutPosition)
 		for (int x = 0; x < MazeWidth; x++)
 		{
 			if (Maze[y][x] == MazeTile::Start)
+			{
+				OutPosition.x = x;
+				OutPosition.y = y;
+				return;
+			}
+		}
+	}
+	OutPosition.x = 0;
+	OutPosition.y = 0;
+}
+
+void GameManager::InitializeMonster(Position& OutPosition)
+{
+	for (int y = 0; y < MazeHeight; y++)
+	{
+		for (int x = 0; x < MazeWidth; x++)
+		{
+			if (Maze[y][x] == (MazeTile::Wall))
 			{
 				OutPosition.x = x;
 				OutPosition.y = y;
@@ -335,13 +352,8 @@ void GameManager::MoveEventProcess(APlayer& Player)
 	// printf("Random Value = %.2f\n", RandomValue);
 	if (RandomValue < 0.2f)
 	{
-		printf("적이 출현했습니다.\n");
-		BattleEvent(Player);
-	}
-	else if (RandomValue < 0.4f)
-	{
 		printf("치유사를 찾았습니다.\n");
-		HealerEvent(Player);
+		//HealerEvent(Player);
 	}
 	else
 	{
