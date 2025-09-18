@@ -30,6 +30,10 @@ inline bool operator==(MazeTile Left, int Right)
 {
 	return static_cast<int>(Left) == Right;
 }
+inline bool operator!=(int Left, MazeTile Right)
+{
+	return Left != static_cast<int>(Right);
+}
 inline int& operator|=(int& Left, MoveDirection Right)
 {
 	Left = Left | static_cast<int>(Right);
@@ -120,6 +124,13 @@ public:
 	/// <returns>벽의 여부</returns>
 	bool IsWall(int X, int Y);
 	/// <summary>
+	/// 지정된 좌표가 통로인지 확인하는 함수
+	/// </summary>
+	/// <param name="X">좌표의 X값</param>
+	/// <param name="Y">좌표의 Y값</param>
+	/// <returns>벽의 여부</returns>
+	bool IsPath(int X, int Y);
+	/// <summary>
 	/// 플레이어가 출구에 도달했는지 확인하는 여부
 	/// </summary>
 	/// <param name="pPlayer">플레이어 구조체</param>
@@ -130,20 +141,25 @@ public:
 	/// </summary>
 	/// <param name="pPlayer">플레이어 구조체</param>
 	/// <returns>적 출현 여부</returns>
-	bool IsBattle(Position& position);
+	bool IsBattle(Position& Pposition, Position& Rposition);
 	/// <summary>
 	/// 비트플래그 연산을 통해 이동 방향을 계산하는 함수
 	/// </summary>
 	/// <param name="MoveFlags">이동 가능한 방향을 나타내는 비트플래그</param>
 	/// <returns>키보드 입력에 따른 이동 방향</returns>
 	MoveDirection GetMoveInput(int MoveFlags);
+	/// <summary>
+	/// 몬스터 이동 함수
+	/// </summary>
+	/// <param name="Monster">몬스터 구조체</param>
+	void MonsterMove(Monster* Monster);
 
 	void MoveEventProcess(APlayer& Player);
 	/// <summary>
 	/// 랜덤으로 나오는 적과의 전투 함수
 	/// </summary>
 	/// <param name="pPlayer">플레이어 구조체</param>
-	void BattleEvent(APlayer& Player);
+	void BattleEvent(APlayer& Player, Monster* MonsterPos);
 	/// <summary>/// 
 	/// 랜덤으로 나오는 회복 이벤트 함수
 	/// </summary>/// 

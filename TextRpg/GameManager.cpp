@@ -18,26 +18,28 @@ void GameManager::InitializeMaze()
 void GameManager::MazeEscapeRun()
 {
 	APlayer player("플레이어", 100.0f, 20.0f);
-	Monster rMonster("적", 0.0f, 0.0f);
+	Monster* rMonster = new Monster("적", 0.0f, 0.0f);
 
 	FindStartPosition(player.GetPosition());
-	InitializeMonster(rMonster.GetPosition());
+	InitializeMonster(rMonster->GetPosition());	// 몬스터 위치 초기화 함수
 
 	printf("~~ 미로 탈출 게임 ~~\n");
 
 	while (player.GetHealth() > 0)
 	{
+		PrintMaze(player.GetPosition(), rMonster->GetPosition());
+
 		if (IsEnd(player.GetPosition()))
 		{
 			printf("축하합니다! 미로를 탈출했습니다.\n");
 			break;
 		}
-		//if (IsBattle(player.GetPosition()))
-		//{
-		//	printf("적을 만났습니다. 전투를 시작합니다.\n");
-		//	BattleEvent(player);
-		//}
-		PrintMaze(player.GetPosition(), rMonster.GetPosition());
+		if (IsBattle(player.GetPosition(),rMonster->GetPosition()))
+		{
+			printf("적을 만났습니다. 전투를 시작합니다.\n");
+			BattleEvent(player, rMonster);
+			PrintMaze(player.GetPosition(), rMonster->GetPosition());
+		}
 
 		int MoveFlags = PrintAvailableMoves(player.GetPosition());
 		MoveDirection Direction = GetMoveInput(MoveFlags);
@@ -61,6 +63,8 @@ void GameManager::MazeEscapeRun()
 			break;
 		}
 
+		
+		MonsterMove(rMonster);// 몬스터 랜덤 이동 함수
 
 		MoveEventProcess(player);
 	}
@@ -246,14 +250,16 @@ void GameManager::FindStartPosition(Position& OutPosition)
 
 void GameManager::InitializeMonster(Position& OutPosition)
 {
+	int RandomX = (rand() % (MazeWidth - 2)) + 1;
+	int RandomY = (rand() % (MazeHeight - 2)) + 1;
 	for (int y = 0; y < MazeHeight; y++)
 	{
 		for (int x = 0; x < MazeWidth; x++)
 		{
-			if (Maze[y][x] == (MazeTile::Wall))
+			if (Maze[y][x] != MazeTile::Wall)
 			{
-				OutPosition.x = x;
-				OutPosition.y = y;
+				OutPosition.x = RandomX;
+				OutPosition.y = RandomY;
 				return;
 			}
 		}
@@ -302,9 +308,24 @@ bool GameManager::IsWall(int X, int Y)
 	return isWall;
 }
 
+bool GameManager::IsPath(int X, int Y)
+{
+	bool isPath = false;
+	if (Y < 0 || Y >= MazeHeight ||
+		X < 0 || X >= MazeWidth ||
+		Maze[Y][X] == MazeTile::Path)
+		isPath = true;
+	return isPath;
+}
+
 bool GameManager::IsEnd(Position& position)
 {
 	return Maze[position.y][position.x] == MazeTile::End;
+}
+
+bool GameManager::IsBattle(Position& Pposition, Position& Mposition)
+{
+	return Pposition == Mposition;
 }
 
 MoveDirection GameManager::GetMoveInput(int MoveFlags)
@@ -346,6 +367,41 @@ MoveDirection GameManager::GetMoveInput(int MoveFlags)
 	return Direction;
 }
 
+void GameManager::MonsterMove(Monster* Monster)
+{
+	int Move = rand() % 6;
+	switch (Move)
+	{
+	case (0):
+		if (IsPath(Monster->GetPosition().x,Monster->GetPosition().y - 1))
+		{
+			Monster->GetPosition().y--;
+			break;
+		}
+	case (1):
+		if (IsPath(Monster->GetPosition().x, Monster->GetPosition().y + 1))
+		{
+			Monster->GetPosition().y++;
+			break;
+		}
+	case (2):
+		if (IsPath(Monster->GetPosition().x - 1, Monster->GetPosition().y))
+		{
+			Monster->GetPosition().x--;
+			break;
+		}
+	case (3):
+		if (IsPath(Monster->GetPosition().x + 1, Monster->GetPosition().y))
+		{
+			Monster->GetPosition().x++;
+			break;
+		}
+	default:
+		// 움직이지 않을 때
+		break;
+	}
+}
+
 void GameManager::MoveEventProcess(APlayer& Player)
 {
 	float RandomValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // 0.0f ~ 1.0f
@@ -362,7 +418,7 @@ void GameManager::MoveEventProcess(APlayer& Player)
 }
 
 
-void GameManager::BattleEvent(APlayer& Player)
+void GameManager::BattleEvent(APlayer& Player, Monster* baseMonster)
 {
 	const int Size = 3;
 	Monster* Enemy[Size] = { 0 };
@@ -383,6 +439,8 @@ void GameManager::BattleEvent(APlayer& Player)
 			printf("적을 처치했습니다.\n");
 			printf("%d 골드를 획득하였습니다.\n", Enemy[RandomMonster]->GetDropGold());
 			Player.AddGold(Enemy[RandomMonster]->GetDropGold());
+			delete baseMonster;
+			baseMonster = nullptr;
 			break;
 		}
 		int RandomSkill = rand() % 10;
