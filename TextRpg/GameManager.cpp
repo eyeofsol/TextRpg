@@ -18,27 +18,45 @@ void GameManager::InitializeMaze()
 void GameManager::MazeEscapeRun()
 {
 	APlayer player("플레이어", 100.0f, 20.0f);
-	Monster* rMonster = new Monster("적", 0.0f, 0.0f);
+	const int MonsterCount = 5;
+	Monster* monsters[MonsterCount] = { nullptr };
+	for (int i = 0; i < MonsterCount; i++)
+	{
+		monsters[i] = new Monster("적", 0.0f + i, 0.0f + i); // 좌표만 다르게 예시
+	}
 
 	FindStartPosition(player.GetPosition());
-	InitializeMonster(rMonster->GetPosition());	// 몬스터 위치 초기화 함수
+	for (int i = 0; i < MonsterCount; i++)
+	{
+		InitializeMonster(monsters[i]->GetPosition());// 몬스터 랜덤 이동 함수
+	}
 
 	printf("~~ 미로 탈출 게임 ~~\n");
 
 	while (player.GetHealth() > 0)
 	{
-		PrintMaze(player.GetPosition(), rMonster->GetPosition());
+		PrintMaze(player.GetPosition(), *monsters, MonsterCount);
 
 		if (IsEnd(player.GetPosition()))
 		{
 			printf("축하합니다! 미로를 탈출했습니다.\n");
 			break;
 		}
-		if (IsBattle(player.GetPosition(),rMonster->GetPosition()))
+		for (int i = 0; i < MonsterCount; i++)
 		{
-			printf("적을 만났습니다. 전투를 시작합니다.\n");
-			BattleEvent(player, rMonster);
-			PrintMaze(player.GetPosition(), rMonster->GetPosition());
+			// i번째 몬스터와 플레이어 충돌 체크
+			if (IsBattle(player.GetPosition(), monsters[i]->GetPosition()))
+			{
+				printf("적을 만났습니다. 전투를 시작합니다.\n");
+
+				// 해당 몬스터와 전투
+				BattleEvent(player, monsters[i]);
+
+				// 전투 후 맵 다시 출력
+				PrintMaze(player.GetPosition(), *monsters, MonsterCount);
+
+				break; // 한 번 전투가 끝나면 루프 종료
+			}
 		}
 
 		int MoveFlags = PrintAvailableMoves(player.GetPosition());
@@ -63,8 +81,10 @@ void GameManager::MazeEscapeRun()
 			break;
 		}
 
-		
-		MonsterMove(rMonster);// 몬스터 랜덤 이동 함수
+		for (int i = 0; i < MonsterCount; i++)
+		{
+			MonsterMove(monsters[i]);// 몬스터 랜덤 이동 함수
+		}
 
 		MoveEventProcess(player);
 	}
@@ -203,27 +223,44 @@ void GameManager::ParseLineData(const char* LineData, int ArraySize, int* OutArr
 	}
 }
 
-void GameManager::PrintMaze(Position& position1, Position& position2)
+void GameManager::PrintMaze(Position& position, Monster* monsters, int monsterCount)
 {
 	for (int y = 0; y < MazeHeight; y++)
 	{
 		for (int x = 0; x < MazeWidth; x++)
 		{
-			if (position1.x == x && position1.y == y)
+			bool printed = false;
+
+			// 플레이어 위치 출력
+			if (position.x == x && position.y == y)
+			{
 				printf("P ");
-			else if(position2.x == x && position2.y == y)
-				printf("M ");
-			else if (Maze[y][x] == MazeTile::Wall)
-				printf("# ");
-			else if (Maze[y][x] == MazeTile::Path)
-				printf(". ");
-			else if (Maze[y][x] == MazeTile::Start)
-				printf("S ");
-			else if (Maze[y][x] == MazeTile::End)
-				printf("E ");
+				printed = true;
+			}
 			else
 			{
-				// 들어오면 안됨 == 맵 데이터가 잘못된 것
+				// 몬스터 위치 확인
+				for (int i = 0; i < monsterCount; i++)
+				{
+					if (monsters[i].GetPosition().x == x && monsters[i].GetPosition().y == y)
+					{
+						printf("M ");
+						printed = true;
+						break; // 이미 출력했으므로 반복 종료
+					}
+				}
+			}
+			// 플레이어나 몬스터가 아닌 경우
+			if (!printed)
+			{
+				if (Maze[y][x] == MazeTile::Wall)
+					printf("# ");
+				else if (Maze[y][x] == MazeTile::Path)
+					printf(". ");
+				else if (Maze[y][x] == MazeTile::Start)
+					printf("S ");
+				else if (Maze[y][x] == MazeTile::End)
+					printf("E ");
 			}
 		}
 		printf("\n");
@@ -373,7 +410,7 @@ void GameManager::MonsterMove(Monster* Monster)
 	switch (Move)
 	{
 	case (0):
-		if (IsPath(Monster->GetPosition().x,Monster->GetPosition().y - 1))
+		if (IsPath(Monster->GetPosition().x, Monster->GetPosition().y - 1))
 		{
 			Monster->GetPosition().y--;
 			break;
