@@ -13,14 +13,17 @@ public:
 	{
 	}
 	virtual void Attack() override;
+	virtual void PrintStatus() override;
 	virtual void Skill(ICanBattle* InTarget) {};
 
 	inline int GetDropGold() const { return DropGold; }
+	inline int GetDropExp() const { return DropExp; }
 	inline Position& GetPosition() { return CurrentPosition; }
 
 	virtual ~Monster() {}
 protected:
 	Position CurrentPosition = Position(0, 0);
-	int DropGold = 10;
+	int DropGold = rand() % 20 + 10;
+	int DropExp = rand() % 5 + 10;
 };
 

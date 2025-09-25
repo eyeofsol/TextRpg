@@ -52,18 +52,22 @@ public:
 	/// <param name="MoveFlags">이동 가능한 방향을 나타내는 비트플래그</param>
 	/// <returns>키보드 입력에 따른 이동 방향</returns>
 	MoveDirection GetMoveInput(int MoveFlags);
-
-	void MoveEventProcess(Player& Player);
+	/// <summary>
+	/// 움직임 이벤트 처리
+	/// </summary>
+	/// <param name="Player">플레이어 구조체</param>
+	/// <param name="InStage">스테이지 단계</param>
+	void MoveEventProcess(Player& Player, int InStage);
 	/// <summary>
 	/// 랜덤으로 나오는 적과의 전투 함수
 	/// </summary>
 	/// <param name="pPlayer">플레이어 구조체</param>
-	void BattleEvent(Player& Player);
+	void BattleEvent(Player& Player, int InStage);
 	/// <summary>/// 
-	/// 랜덤으로 나오는 회복 이벤트 함수
+	/// 랜덤으로 나오는 상점 이벤트 함수
 	/// </summary>/// 
 	/// <param name="pEnemy">플레이어 구조체</param>
-	void HealerEvent(Player& Player);
+	void ShopEvent(Player& Player);
 private:
 	Map Map;
 	int Stage = 0;

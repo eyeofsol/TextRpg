@@ -131,6 +131,7 @@
     <ClInclude Include="Orc.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="Shop.h" />
     <ClInclude Include="TextRpg.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
@@ -143,6 +144,7 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Orc.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Shop.cpp" />
     <ClCompile Include="TextRpg.cpp" />
     <ClCompile Include="Zombie.cpp" />
   </ItemGroup>

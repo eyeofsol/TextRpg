@@ -3,6 +3,7 @@
 #include "Orc.h"
 #include "Goblin.h"
 #include "Zombie.h"
+#include "Shop.h"
 #include <iostream>
 
 void GameManager::PlayGame()
@@ -63,19 +64,19 @@ void GameManager::PlayGame()
 				// 있을 수 없음
 				break;
 			}
-			MoveEventProcess(player);
+			MoveEventProcess(player, Stage);
 		}
 	}
 	if (player.GetHealth() > 0)
 		printf("축하합니다! 게임을 클리어하셨습니다!");
-	printf("정복한 스테이지 : %d, 최종 최대체력 : %.2f, 최종 공격력 : %.2f\n", Stage, player.GetMaxHealth(), player.GetAttackPower());
-	printf("소지 골드 : %d", player.GetGold());
+	printf("정복한 스테이지 : %d | 최종 최대체력 : %.2f | 최종 공격력 : %.2f\n", Stage, player.GetMaxHealth(), player.GetAttackPower());
+	printf("최종 마나 %d | 소지 골드 : %d", player.GetMana(), player.GetGold());
 }
 
 int GameManager::PrintAvailableMoves(Position& position)
 {
 	int MoveFlags = static_cast<int>(MoveDirection::DirNone);
-
+	
 	printf("이동할 수 있는 방향을 선택하세요 (w:위 a:왼쪽 s:아래쪽 d:오른쪽 g:체력 회복):\n");
 	if (!IsWall(position.x, position.y - 1))
 	{
@@ -161,19 +162,19 @@ MoveDirection GameManager::GetMoveInput(int MoveFlags)
 	return Direction;
 }
 
-void GameManager::MoveEventProcess(Player& Player)
+void GameManager::MoveEventProcess(Player& Player, int InStage)
 {
 	float RandomValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // 0.0f ~ 1.0f
 	// printf("Random Value = %.2f\n", RandomValue);
-	if (RandomValue < 0.2f)
+	if (RandomValue < 0.1f)
 	{
-		printf("적이 출현했습니다.\n");
-		//BattleEvent(Player);
+		printf("\n적이 출현했습니다.\n");
+		BattleEvent(Player, InStage);
 	}
-	else if (RandomValue < 0.4f)
+	else if (RandomValue < 0.2f)
 	{
-		printf("치유사를 찾았습니다.\n");
-		//HealerEvent(Player);
+		printf("떠돌이 상인을 만났습니다.\n");
+		//ShopEvent(Player);
 	}
 	else
 	{
@@ -181,28 +182,96 @@ void GameManager::MoveEventProcess(Player& Player)
 	}
 }
 
-
-void GameManager::BattleEvent(Player& Player)
+void GameManager::BattleEvent(Player& Player, int InStage)
 {
 	const int Size = 3;
+	float AddStatus = static_cast<float>(InStage);
 	Monster* Enemy[Size] = { 0 };
-	Enemy[0] = new Orc("오크", 50.0f, 10.0f);
-	Enemy[1] = new Goblin("고블린", 30.0f, 15.0f);
-	Enemy[2] = new Zombie("좀비", 80.0f, 5.0f);
+	Enemy[0] = new Orc("오크", 50.0f + (5.0f * AddStatus), 10.0f + (2.0f * AddStatus));
+	Enemy[1] = new Goblin("고블린", 30.0f + (5.0f * AddStatus), 15.0f + (2.0f * AddStatus));
+	Enemy[2] = new Zombie("좀비", 80.0f + (5.0f * AddStatus), 5.0f + (2.0f * AddStatus));
 
 	int RandomMonster = rand() % 3;
+	int Run = 0;
 
-	printf("[%s]을 마주쳤습니다. 배틀을 시작합니다.\n", Enemy[RandomMonster]->GetName().c_str());
+	printf("\n[%s]을 마주쳤습니다. 배틀을 시작합니다.\n", Enemy[RandomMonster]->GetName().c_str());
 	while (true)
 	{
-		printf("플레이어가 공격합니다.\n");
-		Player.ApplyDamage(Enemy[RandomMonster]);
-		printf("적의 남은 HP : %.1f\n", Enemy[RandomMonster]->GetHealth());
+		int Input = 0;
+		bool IsGuard = false;
+		bool Select = false;
+		printf("적 정보\n");
+		Enemy[RandomMonster]->PrintStatus();
+		while (!Select)
+		{
+			printf("\n현재 상태\n");
+			Player.PrintStatus();
+			printf("1. 공격 | 2. 스킬 | 3. 아이템 | 4. 도망\n");
+			printf("행동을 선택하세요 : ");
+			if (!(std::cin >> Input))
+			{
+				std::cin.clear(); // failbit 초기화
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 잘못 입력된 부분 버림
+				printf("잘못 입력하셨습니다. 숫자를 입력하세요.\n");
+				continue; // 다시 입력 받음
+			}
+			printf("----------------------------------------\n");
+
+			switch (Input)
+			{
+			case(1):
+			{
+				printf("\n플레이어가 공격합니다.\n");
+				Player.ApplyDamage(Enemy[RandomMonster]);
+				printf("적의 남은 HP : %.1f\n", Enemy[RandomMonster]->GetHealth());
+				Select = true;
+				break;
+			}
+			case(2):
+			{
+				// 스킬 선택 함수
+				Player.UseSkill(Enemy[RandomMonster], &Select);
+				break;
+			}
+			case(3):
+			{
+				// 인벤토리 오픈 함수
+				break;
+			}
+			case(4):
+			{
+				printf("적의 공격력의 2배의 데미지를 입고 도망칩니다.\n");
+				printf("계속 하시겠습니까? 1. 예 | 2. 아니오 : ");
+				std::cin >> Run;
+				if (Run == 1)
+				{
+					printf("도망칩니다.\n");
+					Player.TakeDamage(Enemy[RandomMonster]->GetAttackPower() * 2);
+					Select = true;
+				}
+				else
+				{
+					printf("메뉴로 돌아갑니다.\n");
+				}
+				break;
+			}
+			default:
+			{
+				printf("잘못 입력하셨습니다.\n");
+			}
+			}
+		}
+		if (Run == 1)
+		{
+			break;	// 도망침 판정
+		}
+
 		if (Enemy[RandomMonster]->GetHealth() <= 0)
 		{
 			printf("적을 처치했습니다.\n");
-			printf("%d 골드를 획득하였습니다.\n", Enemy[RandomMonster]->GetDropGold());
+			
 			Player.AddGold(Enemy[RandomMonster]->GetDropGold());
+			Player.AddExp(Enemy[RandomMonster]->GetDropExp());
 			break;
 		}
 		int RandomSkill = rand() % 10;
@@ -212,7 +281,10 @@ void GameManager::BattleEvent(Player& Player)
 		}
 		else
 			Enemy[RandomMonster]->ApplyDamage(&Player);
-		printf("플레이어의 남은 HP : %.1f\n", Player.GetHealth());
+		printf("플레이어의 남은 HP : %.1f\n\n", Player.GetHealth());
+		Player.UpdateGuard();
+		Player.UpdateBerserk();
+		Player.SetMana(2);
 		if (Player.GetHealth() <= 0)
 		{
 			printf("패배하였습니다.\n");
@@ -220,6 +292,7 @@ void GameManager::BattleEvent(Player& Player)
 		}
 	}
 
+	Player.ResetStatus();
 	for (int i = 0; i < Size; i++)
 	{
 		delete Enemy[i];
@@ -227,37 +300,8 @@ void GameManager::BattleEvent(Player& Player)
 	}
 }
 
-void GameManager::HealerEvent(Player& Player)
-{
-	printf("치유사를 만났습니다. 얼마를 지불하시겠습니까?\n");
-	printf("현재 체력 : %.1f, 현재 골드 : %d\n", Player.GetHealth(), Player.GetGold());
-	int payGold = -1;
-	while (payGold < 0 || payGold > Player.GetGold())
-	{
-		printf("지불할 골드를 입력하세요 : ");
-		std::cin >> payGold;
-		if (payGold <= 0)
-		{
-			printf("회복을 포기하였습니다.\n");
-		}
-		else if (payGold > Player.GetGold())
-		{
-			printf("소지 금액이 부족합니다.\n");
-		}
-		else
-		{
-			printf("잘못 입력하셨습니다.\n");
-		}
-	}
-	if (payGold > 0)
-	{
-		float healAmout = static_cast<float>(payGold);
-		float newHealth = Player.GetHealth() + healAmout;
-		if (newHealth > Player.GetMaxHealth())
-			newHealth = Player.GetMaxHealth();
-		Player.GetHealth() = newHealth;
-		Player.GetGold() -= payGold;
-		printf("회복하였습니다.\n");
-	}
-	printf("현재 체력 : %.1f, 남은 골드 : %d\n", Player.GetHealth(), Player.GetGold());
-}
+//void GameManager::ShopEvent(Player& Player)
+//{
+//	Shop Shop;
+//	Shop.Open(Player);
+//}

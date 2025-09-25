@@ -2,12 +2,12 @@
 
 void Zombie::Attack()
 {
-	printf("[%s]가 달려듭니다.\n", Name.c_str());
+	printf("\n[%s]가 달려듭니다.\n", Name.c_str());
 }
 
 void Zombie::Skill(ICanBattle* InTarget)
 {
-	printf("[%s]이 스킬을 발동합니다.\n", Name.c_str());
+	printf("\n[%s]이 스킬을 발동합니다.\n", Name.c_str());
 	Zombie::Recover();
 }
 

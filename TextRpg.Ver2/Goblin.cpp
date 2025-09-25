@@ -2,12 +2,12 @@
 
 void Goblin::Attack()
 {
-	printf("[%s]이 활을 쏩니다.\n", Name.c_str());
+	printf("\n[%s]이 활을 쏩니다.\n", Name.c_str());
 }
 
 void Goblin::Skill(ICanBattle* InTarget)
 {
-	printf("[%s]이 스킬을 발동합니다.\n", Name.c_str());
+	printf("\n[%s]이 스킬을 발동합니다.\n", Name.c_str());
 	Goblin::Shoot(InTarget);
 }
 

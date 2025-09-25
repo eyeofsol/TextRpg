@@ -22,6 +22,8 @@ public:
 	/// </summary>
 	/// <param name="InDamage">적용할 피해랑</param>
 	virtual void TakeDamage(float InDamage) override;
+
+	virtual void PrintStatus();
 	/// <summary>
 	/// 이 Actor의 생존 여부를 알려주는 함수
 	/// </summary>
