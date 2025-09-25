@@ -1,8 +1,8 @@
 #pragma once
 #include "Position.h"
 #include "Actor.h"
+#include "ItemInfo.h"
 #include <vector>
-#include "Shop.h"
 #include <map>
 
 struct SkillInfo
@@ -48,7 +48,9 @@ public:
 	void ResetStatus();
 	
 	// 인벤토리 함수
-
+	void AddItem(const ItemInfo& Item);
+	void OpenInventory(bool* Select);
+	void UseItem(const ItemInfo& Item);
 
 	// 체크 및 Get,Set함수
 	inline bool CheckGuard() const { return IsGuard; }
@@ -86,5 +88,6 @@ protected:
 	int GuardTurn = 0;
 	int BerserkTurn = 0;
 
+	std::map<std::string, std::pair<ItemInfo, int>> Inventory;
 };
 

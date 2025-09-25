@@ -116,6 +116,66 @@ void Player::ResetStatus()
 	BerserkTurn = 0;
 }
 
+void Player::AddItem(const ItemInfo& Item)
+{
+	if (Inventory.find(Item.Name) == Inventory.end())
+		Inventory[Item.Name] = { Item, 1 };
+	else
+		Inventory[Item.Name].second++;
+}
+
+void Player::OpenInventory(bool* Select)
+{
+	if (Inventory.empty())
+	{
+		printf("인벤토리가 비어있습니다.\n");
+		return;
+	}
+
+	std::cout << "\n--------인벤토리--------\n";
+	std::vector<std::string> keys;
+	int Index = 0;
+	for (auto& iter : Inventory)
+	{
+		Index++;
+		printf("%d. %s (%d개)\n", Index, iter.second.first.Name.c_str(), iter.second.second);
+		keys.push_back(iter.first);
+	}
+	std::cout << "사용할 아이템을 선택하세요(0을 입력시 취소됩니다): ";
+
+	int Input;
+	std::cin >> Input;
+	if (Input == 0)
+		return;
+	if (Input < -1 || Input > Index) {
+		std::cout << "잘못된 입력입니다.\n";
+		return;
+	}
+
+	std::string selected = keys[Input - 1];
+	UseItem(Inventory[selected].first);
+	Inventory[selected].second--;
+	if (Inventory[selected].second <= 0)
+		Inventory.erase(selected);
+	*Select = true;
+}
+
+void Player::UseItem(const ItemInfo& Item)
+{
+	if (Item.HPAmount > 0)
+	{
+		Health += Item.HPAmount;
+		if (Health > MaxHealth) Health = MaxHealth;
+		printf("%s를 사용합니다. 체력이 %.2f 회복되었습니다.\n", Item.Name.c_str(), Item.HPAmount);
+	}
+	if (Item.MPAmount > 0)
+	{
+		Mana += Item.MPAmount;
+		if (Mana > MaxMana) Mana = MaxMana;
+		printf("%s를 사용합니다. 마나가 %d 회복되었습니다.\n", Item.Name.c_str(), Item.MPAmount);
+	}
+}
+
 void Player::UseSkill(ICanBattle* InTarget, bool* Select)
 {
 	PrintSkill();

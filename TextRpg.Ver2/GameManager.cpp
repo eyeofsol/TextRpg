@@ -174,7 +174,7 @@ void GameManager::MoveEventProcess(Player& Player, int InStage)
 	else if (RandomValue < 0.2f)
 	{
 		printf("떠돌이 상인을 만났습니다.\n");
-		//ShopEvent(Player);
+		ShopEvent(Player);
 	}
 	else
 	{
@@ -236,6 +236,7 @@ void GameManager::BattleEvent(Player& Player, int InStage)
 			case(3):
 			{
 				// 인벤토리 오픈 함수
+				Player.OpenInventory(&Select);
 				break;
 			}
 			case(4):
@@ -300,8 +301,8 @@ void GameManager::BattleEvent(Player& Player, int InStage)
 	}
 }
 
-//void GameManager::ShopEvent(Player& Player)
-//{
-//	Shop Shop;
-//	Shop.Open(Player);
-//}
+void GameManager::ShopEvent(Player& Player)
+{
+	Shop Shop;
+	Shop.OpenShop(Player);
+}
