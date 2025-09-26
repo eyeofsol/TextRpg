@@ -50,7 +50,8 @@ public:
 	// 인벤토리 함수
 	void AddItem(const ItemInfo& Item);
 	void OpenInventory(bool* Select);
-	void UseItem(const ItemInfo& Item);
+	void UseItem(const ItemInfo& Item,bool* Select);
+	void UsePassive(const ItemInfo& Item);
 
 	// 체크 및 Get,Set함수
 	inline bool CheckGuard() const { return IsGuard; }
@@ -75,7 +76,7 @@ public:
 protected:
 
 	Position CurrentPosition = Position(0, 0);
-	int Gold = 0;
+	int Gold = 50;
 	int Level = 1;
 	int Exp = 0;
 	int MaxExp = 30;

@@ -19,6 +19,7 @@ void GameManager::PlayGame()
 
 		while (player.GetHealth() > 0)
 		{
+			printf("\n");
 			Map.PrintMap(player.GetPosition());
 
 			if (IsEnd(player.GetPosition()))
@@ -166,15 +167,20 @@ void GameManager::MoveEventProcess(Player& Player, int InStage)
 {
 	float RandomValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX); // 0.0f ~ 1.0f
 	// printf("Random Value = %.2f\n", RandomValue);
-	if (RandomValue < 0.1f)
+	if (RandomValue < 0.2f)
 	{
 		printf("\n적이 출현했습니다.\n");
 		BattleEvent(Player, InStage);
 	}
-	else if (RandomValue < 0.2f)
+	else if (RandomValue < 0.3f)
 	{
 		printf("떠돌이 상인을 만났습니다.\n");
 		ShopEvent(Player);
+	}
+	else if (RandomValue < 0.35f)
+	{
+		printf("\n보물 상자를 발견했습니다!\n");
+		BoxEvent(Player);
 	}
 	else
 	{
@@ -305,4 +311,62 @@ void GameManager::ShopEvent(Player& Player)
 {
 	Shop Shop;
 	Shop.OpenShop(Player);
+}
+
+void GameManager::BoxEvent(Player& Player)
+{
+	int RandomItem = rand() % 100;
+	int RandomCount;
+	if (RandomItem < 5)
+	{
+		RandomCount = rand() % 3;
+		switch (RandomCount)
+		{
+		case(0):
+		{
+			printf("힘의 물약을 발견하였습니다.\n\n");
+			Player.UsePassive(ItemInfo::MakeAttackItem("힘의 물약", "기본 공격력을 2.5 증가시킵니다", 100, 2.5f));
+			break;
+		}
+		case(1):
+		{
+			printf("활력의 물약을 발견하였습니다.\n\n");
+			Player.UsePassive(ItemInfo::MakeMaxHPItem("활력의 물약", "최대 체력을 10 증가시킵니다.", 100, 10.0f));
+			break;
+		}
+		case(2):
+		{
+			printf("지능의 물약을 발견하였습니다.\n\n");
+			Player.UsePassive(ItemInfo::MakeMaxMPItem("지능의 물약", "최대 마나를 5 증가시킵니다.", 100, 5));
+			break;
+		}
+		}
+	}
+	else if (RandomItem < 25)
+	{
+		RandomCount = rand() % 5 + 1;
+		printf("HP 소형 물약을 %d개 발견하였습니다.\n\n",RandomCount);
+		for (int i = 0; i < RandomCount; i++)
+			Player.AddItem(ItemInfo::MakeHPItem("HP 소형 물약", "HP를 10 회복합니다.", 10, 10.0f));
+	}
+	else if (RandomItem < 35)
+	{
+		RandomCount = rand() % 2 + 1;
+		printf("HP 대형 물약을 %d개 발견하였습니다.\n\n", RandomCount);
+		for (int i = 0; i < RandomCount; i++)
+			Player.AddItem(ItemInfo::MakeHPItem("HP 대형 물약", "HP를 30 회복합니다.", 30, 30.0f));
+	}
+	else if (RandomItem < 45)
+	{
+		RandomCount = rand() % 3 + 1;
+		printf("마나 물약을 %d개 발견하였습니다.\n\n", RandomCount);
+		for (int i = 0; i < RandomCount; i++)
+			Player.AddItem(ItemInfo::MakeMPItem("마나 물약", "MP를 10 회복합니다.", 20, 10));
+	}
+	else
+	{
+		RandomCount = rand() % 100;
+		printf("골드를 %d원 발견하였습니다.\n");
+		Player.AddGold(RandomCount);
+	}
 }

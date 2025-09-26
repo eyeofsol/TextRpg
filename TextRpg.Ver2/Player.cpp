@@ -34,7 +34,7 @@ void Player::Levelup()
 	Level++;
 	Exp -= MaxExp;
 	MaxExp += 10;
-	printf("체력 + 10 | 공격력 + 1 | 마나 + 5\n\n");
+	printf("체력 + 10 | 공격력 + 2.5 | 마나 + 5\n\n");
 	MaxHealth += 10.0f;
 	Health = MaxHealth;
 	MaxMana += 5;
@@ -153,26 +153,64 @@ void Player::OpenInventory(bool* Select)
 	}
 
 	std::string selected = keys[Input - 1];
-	UseItem(Inventory[selected].first);
-	Inventory[selected].second--;
-	if (Inventory[selected].second <= 0)
-		Inventory.erase(selected);
-	*Select = true;
+	UseItem(Inventory[selected].first, Select);
+	if (*Select == true)
+	{
+		Inventory[selected].second--;
+		if (Inventory[selected].second <= 0)
+			Inventory.erase(selected);
+	}
 }
 
-void Player::UseItem(const ItemInfo& Item)
+void Player::UseItem(const ItemInfo& Item, bool* Select)
 {
 	if (Item.HPAmount > 0)
 	{
-		Health += Item.HPAmount;
-		if (Health > MaxHealth) Health = MaxHealth;
-		printf("%s를 사용합니다. 체력이 %.2f 회복되었습니다.\n", Item.Name.c_str(), Item.HPAmount);
+		if (Health < MaxHealth)
+		{
+			Health += Item.HPAmount;
+			if (Health > MaxHealth) Health = MaxHealth;
+			printf("%s를 사용합니다. 체력이 %.2f 회복되었습니다.\n", Item.Name.c_str(), Item.HPAmount);
+			*Select = true;
+		}
+		else
+			printf("체력이 이미 최대치입니다.\n");
 	}
+
 	if (Item.MPAmount > 0)
 	{
-		Mana += Item.MPAmount;
-		if (Mana > MaxMana) Mana = MaxMana;
-		printf("%s를 사용합니다. 마나가 %d 회복되었습니다.\n", Item.Name.c_str(), Item.MPAmount);
+		if (Mana < MaxMana)
+		{
+			Mana += Item.MPAmount;
+			if (Mana > MaxMana) Mana = MaxMana;
+			printf("%s를 사용합니다. 마나가 %d 회복되었습니다.\n", Item.Name.c_str(), Item.MPAmount);
+			*Select = true;
+		}
+		else
+			printf("마나가 이미 최대치입니다.\n");
+	}
+}
+
+void Player::UsePassive(const ItemInfo& Item)
+{
+	if (Item.AttackAmount > 0)
+	{
+		AddAttackPower(Item.AttackAmount);
+		printf("%s를 사용합니다. 공격력이 영구적으로 %.2f 증가하었습니다.\n", Item.Name.c_str(), Item.AttackAmount);
+	}
+
+	if (Item.MaxHPAmount > 0)
+	{
+		MaxHealth += Item.MaxHPAmount;
+		Health += Item.MaxHPAmount;
+		printf("%s를 사용합니다. 체력이 영구적으로 %.2f 증가하었습니다.\n", Item.Name.c_str(), Item.MaxHPAmount);
+	}
+
+	if (Item.MaxMPAmount > 0)
+	{
+		MaxMana += Item.MaxMPAmount;
+		Mana += Item.MaxMPAmount;
+		printf("%s를 사용합니다. 마나가 영구적으로 %d 증가하었습니다.\n", Item.Name.c_str(), Item.MaxMPAmount);
 	}
 }
 

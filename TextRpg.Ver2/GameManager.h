@@ -68,10 +68,15 @@ public:
 	/// </summary>/// 
 	/// <param name="pEnemy">플레이어 구조체</param>
 	void ShopEvent(Player& Player);
+	/// <summary>
+	/// 랜덤으로 나오는 보물상자 이벤트 함수
+	/// </summary>
+	/// <param name="Player">플레이어 구조체</param>
+	void BoxEvent(Player& Player);
 private:
 	Map Map;
 	int Stage = 0;
 	bool HasKey = false;
-	static constexpr int MaxStage = 5;
+	static constexpr int MaxStage = 3;
 };
 
