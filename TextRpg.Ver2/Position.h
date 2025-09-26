@@ -1,6 +1,6 @@
 #pragma once
 
-struct Position
+struct Position	// 좌표 계산 구조체
 {
 	int x;
 	int y;

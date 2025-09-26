@@ -4,7 +4,7 @@
 #include<time.h>
 #include<random>
 
-void Map::ShuffleDir(int dir[])
+void Map::ShuffleDir(int dir[])	// 셔플 알고리즘
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -15,15 +15,15 @@ void Map::ShuffleDir(int dir[])
 	}
 }
 
-void Map::Carve(int x, int y)
+void Map::Carve(int x, int y)	// 랜덤하게 벽을 허무는 함수
 {
 	int dir[4] = { 0,1,2,3 };
-	ShuffleDir(dir);
+	ShuffleDir(dir);	// 방향 셔플
 
 	for (int i = 0; i < 4; i++)
 	{
-		int nx = x + dx[dir[i]] * 2;
-		int ny = y + dy[dir[i]] * 2;
+		int nx = x + dx[dir[i]] * 2;	// 좌우 계산
+		int ny = y + dy[dir[i]] * 2;	// 상하 계산
 
 		// 범위 체크
 		if (nx > 0 && nx < Width - 1 && ny > 0 && ny < Height - 1)
@@ -43,13 +43,13 @@ void Map::Carve(int x, int y)
 				//	printf("\n");
 				//}
 				//int tmp = getchar();
-				Carve(nx, ny);
+				Carve(nx, ny);	// 재귀 실행
 			}
 		}
 	}
 }
 
-void Map::GenerateMap()
+void Map::GenerateMap()	//	맵 생성
 {
 	srand(time(0));
 	//printf("미로의 가로와 세로 길이를 입력하세요 : ");
@@ -94,9 +94,9 @@ void Map::GenerateMap()
 	SetKeyPoint();
 }
 
-void Map::SetExitPoint()
+void Map::SetExitPoint()	// 출구 설정
 {
-	std::vector<Position> ExitPoint;
+	std::vector<Position> ExitPoint;	// 출구 가능 좌표 벡터
 
 	for (int y = 1; y < Height - 1; y++)
 	{
@@ -105,36 +105,36 @@ void Map::SetExitPoint()
 			if (x > 10 && Maze[y][x] == Path)
 			{
 				// 막다른 길인지 확인
-				int cnt = 0;
+				int Count = 0;
 				for (int d = 0; d < 4; d++)
 				{
 					int nx = x + dx[d];
 					int ny = y + dy[d];
 					if (nx >= 0 && nx < Width && ny >= 0 && ny < Height)
 					{
-						if (Maze[ny][nx] == Path || Maze[ny][nx] == Start)
-							cnt++;
+						if (Maze[ny][nx] == Path || Maze[ny][nx] == Start)	// 상하좌우에 길이나 시작점이 있으면 Count++
+							Count++;
 					}
 				}
 
-				if (cnt == 1) // 길이 하나뿐이면 막다른 길
+				if (Count == 1) // 길이 하나뿐이면 막다른 길
 				{
-					ExitPoint.push_back({ x, y });
+					ExitPoint.push_back({ x, y });	// 벡터에 입력
 				}
 			}
 		}
 	}
 
-	if (!ExitPoint.empty())
+	if (!ExitPoint.empty())	// 출구 후보군이 있다면
 	{
-		int r = rand() % ExitPoint.size();
-		Maze[ExitPoint[r].y][ExitPoint[r].x] = End;
+		int r = rand() % ExitPoint.size();	// 랜덤한 좌표 뽑기
+		Maze[ExitPoint[r].y][ExitPoint[r].x] = End;	// 해당 좌표를 출구로 설정
 	}
 }
 
-void Map::SetKeyPoint()
+void Map::SetKeyPoint()	// 열쇠 위치 설정
 {
-	std::vector<Position> KeyPoint;
+	std::vector<Position> KeyPoint;	// 열쇠 위치 가능 좌표 벡터
 
 	for (int y = 1; y < Height - 1; y++)
 	{
@@ -143,19 +143,19 @@ void Map::SetKeyPoint()
 			if (Maze[y][x] == Path)
 			{
 				// 막다른 길인지 검사
-				int cnt = 0;
+				int Count = 0;
 				for (int d = 0; d < 4; d++)
 				{
 					int nx = x + dx[d];
 					int ny = y + dy[d];
 					if (nx >= 0 && nx < Width && ny >= 0 && ny < Height)
 					{
-						if (Maze[ny][nx] == Path || Maze[ny][nx] == Start)
-							cnt++;
+						if (Maze[ny][nx] == Path || Maze[ny][nx] == Start)	// 상하좌우에 길이나 시작점이 있으면 Count++
+							Count++;
 					}
 				}
 
-				if (cnt == 1) // 막다른 길
+				if (Count == 1) // 막다른 길
 				{
 					// 출구랑 겹치면 안 됨
 					if (Maze[y][x] != End)
@@ -165,24 +165,20 @@ void Map::SetKeyPoint()
 		}
 	}
 
-	if (!KeyPoint.empty())
+	if (!KeyPoint.empty())	// 열쇠 좌표 후보군이 있다면
 	{
-		int r = rand() % KeyPoint.size();
-		Maze[KeyPoint[r].y][KeyPoint[r].x] = Key;
-	}
-	else
-	{
-		printf("조건에 맞는 열쇠 후보가 없습니다!\n");
+		int r = rand() % KeyPoint.size();	// 랜덤한 좌표 뽑기
+		Maze[KeyPoint[r].y][KeyPoint[r].x] = Key;	// 해당 좌표를 열쇠 위치로 설정
 	}
 }
 
-void Map::FindStartPosition(Position& OutPosition)
+void Map::FindStartPosition(Position& OutPosition)	// 플레이어의 시작 위치 설정
 {
 	for (int y = 0; y < Height; y++)
 	{
 		for (int x = 0; x < Width; x++)
 		{
-			if (Maze[y][x] == MazeTile::Start)
+			if (Maze[y][x] == MapTile::Start)
 			{
 				OutPosition.x = x;
 				OutPosition.y = y;

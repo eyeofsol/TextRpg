@@ -14,16 +14,14 @@ public:
 	}
 	virtual void Attack() override;
 	virtual void PrintStatus() override;
-	virtual void Skill(ICanBattle* InTarget) {};
+	virtual void Skill(ICanBattle* InTarget) {};	// 몬스터 발동 스킬
 
 	inline int GetDropGold() const { return DropGold; }
 	inline int GetDropExp() const { return DropExp; }
-	inline Position& GetPosition() { return CurrentPosition; }
 
 	virtual ~Monster() {}
 protected:
-	Position CurrentPosition = Position(0, 0);
-	int DropGold = rand() % 20 + 10;
-	int DropExp = rand() % 5 + 10;
+	int DropGold = rand() % 20 + 10;	// 드랍 골드
+	int DropExp = rand() % 5 + 10;	// 드랍 경험치
 };
 

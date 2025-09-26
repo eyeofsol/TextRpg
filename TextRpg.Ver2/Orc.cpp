@@ -11,8 +11,8 @@ void Orc::Skill(ICanBattle* InTarget)
 	Hawling();
 }
 
-void Orc::Hawling()
+void Orc::Hawling()	// 오크 고유 스킬 : 포효(공격력 증가)
 {
-	printf("[%s]가 울부짖습니다. 공격력이 1.1배 올라갑니다.\n", Name.c_str());
-	SetAttackPower(AttackPower * 1.1f);
+	printf("[%s]가 울부짖습니다. 공격력이 1.2배 올라갑니다.\n", Name.c_str());
+	SetAttackPower(AttackPower * 1.2f);
 }

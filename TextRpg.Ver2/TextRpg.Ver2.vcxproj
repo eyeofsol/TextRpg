@@ -134,7 +134,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Shop.h" />
-    <ClInclude Include="TextRpg.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <ItemGroup>

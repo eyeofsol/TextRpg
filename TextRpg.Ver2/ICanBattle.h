@@ -1,6 +1,6 @@
 #pragma once
 
-class ICanBattle
+class ICanBattle	// 배틀 인터페이스
 {
 public:
 	virtual ~ICanBattle() {}

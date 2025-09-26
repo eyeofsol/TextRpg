@@ -53,8 +53,8 @@ protected:
 		AttackPower = InAttackPower;
 	}
 	std::string Name = "액터";
-	float Health = 100.0f;
-	float MaxHealth = 100.0f;
-	float AttackPower = 10.0f;
+	float Health = 100.0f;	// 체력
+	float MaxHealth = 100.0f;	// 최대 체력
+	float AttackPower = 10.0f;	// 기본 공격력
 };
 

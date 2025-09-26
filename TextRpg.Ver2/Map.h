@@ -2,7 +2,7 @@
 #include<cstdint>
 #include "Position.h"
 
-enum MazeTile
+enum MapTile	// 맵 타일
 {
 	Path = 0,
 	Wall = 1,
@@ -11,7 +11,7 @@ enum MazeTile
 	Key = 4
 };
 
-enum MoveDirection
+enum MoveDirection	// 이동 방향 비트플래그
 {
 	DirNone = 0,
 	DirUp = 1 << 0,
@@ -68,8 +68,8 @@ public:
 private:
 
 	static constexpr int MAX = 51;	// 최대 미로 크기
-	int Maze[MAX][MAX];
-	int Width = 20, Height = 10;
+	int Maze[MAX][MAX];	// 미로 구조체
+	int Width = 20, Height = 10;	// 너비, 높이
 
 	// 방향(상, 하, 좌, 우)
 	int dx[4] = { 0,0,-1,1 };

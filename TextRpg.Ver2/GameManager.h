@@ -74,9 +74,9 @@ public:
 	/// <param name="Player">플레이어 구조체</param>
 	void BoxEvent(Player& Player);
 private:
-	Map Map;
-	int Stage = 0;
-	bool HasKey = false;
-	static constexpr int MaxStage = 3;
+	Map Map;	// 맵 클래스
+	int Stage = 0;	// 스테이지 단계
+	bool HasKey = false;	// 열쇠 보유 여부
+	static constexpr int MaxStage = 3;	// 최대 스테이지 개수
 };
 

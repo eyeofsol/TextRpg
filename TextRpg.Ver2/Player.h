@@ -5,14 +5,14 @@
 #include <vector>
 #include <map>
 
-struct SkillInfo
+struct SkillInfo	// 스킬 구조체
 {
-	std::string Name;
-	std::string Detail;
-	int SkillNum;
-	int RequiredLevel;
-	int ManaCost;
-	bool Learned = false;
+	std::string Name;	// 이름
+	std::string Detail;	// 설명
+	int SkillNum;		// 스킬 번호
+	int RequiredLevel;	// 스킬을 배우기 위해 필요한 레벨
+	int ManaCost;		// 소모 마나
+	bool Learned = false;	// 스킬을 배웠는지 여부
 };
 
 class Player : public Actor
@@ -33,25 +33,25 @@ public:
 	virtual void PrintStatus() override;
 
 	// 전투 종료 함수
-	void AddGold(int InGold);
-	void AddExp(int InExp);
-	void Levelup();
+	void AddGold(int InGold);	// 골드 획득
+	void AddExp(int InExp);		// 경험치 획득
+	void Levelup();				// 레벨 업
 
 	// 스킬 함수
-	void UseSkill(ICanBattle* InTarget, bool* Select);
-	void PrintSkill();
-	void DoubleAttack(ICanBattle* InTarget);
-	void SetGuard(int InTurn); 
-	void UpdateGuard();
-	void SetBerserk(int InTure);
-	void UpdateBerserk();
-	void ResetStatus();
+	void UseSkill(ICanBattle* InTarget, bool* Select);	// 스킬 사용
+	void PrintSkill();	// 사용 가능한 스킬 목록 출력
+	void DoubleAttack(ICanBattle* InTarget);	// 연속 베기 스킬
+	void SetGuard(int InTurn);	// 방패 올리기 스킬
+	void UpdateGuard();	// 가드 턴 계산
+	void SetBerserk(int InTure);	// 광폭화 스킬
+	void UpdateBerserk();	// 광폭화 턴 계산
+	void ResetStatus();	// 배틀 종료 후 초기화 함수
 	
 	// 인벤토리 함수
-	void AddItem(const ItemInfo& Item);
-	void OpenInventory(bool* Select);
-	void UseItem(const ItemInfo& Item,bool* Select);
-	void UsePassive(const ItemInfo& Item);
+	void AddItem(const ItemInfo& Item);	// 인벤토리에 아이템 추가
+	void OpenInventory(bool* Select);	// 인벤토리 열기
+	void UseItem(const ItemInfo& Item,bool* Select);	// 인벤토리의 아이템 사용
+	void UsePassive(const ItemInfo& Item);	// 패시브 아이템 획득시 바로 사용
 
 	// 체크 및 Get,Set함수
 	inline bool CheckGuard() const { return IsGuard; }
@@ -75,20 +75,20 @@ public:
 	virtual ~Player() {}
 protected:
 
-	Position CurrentPosition = Position(0, 0);
-	int Gold = 50;
-	int Level = 1;
-	int Exp = 0;
-	int MaxExp = 30;
-	int MaxMana = 50;
-	int Mana = MaxMana;
+	Position CurrentPosition = Position(0, 0);	// 플레이어 좌표
+	int Gold = 50;	// 소지 골드
+	int Level = 1;	// 레벨
+	int Exp = 0;	// 경험치
+	int MaxExp = 30;	// 최대 경험치
+	int MaxMana = 50;	// 최대 마나
+	int Mana = MaxMana;	// 마나
 
-	std::vector<SkillInfo> AllSkills;
-	bool IsGuard = false;
-	bool IsBerserk = false;
-	int GuardTurn = 0;
-	int BerserkTurn = 0;
+	std::vector<SkillInfo> AllSkills;	// 스킬 벡터
+	bool IsGuard = false;	// 가드 여부
+	bool IsBerserk = false;	// 광폭화 여부
+	int GuardTurn = 0;	// 가드 유지 턴
+	int BerserkTurn = 0;	// 광폭화 유지 턴
 
-	std::map<std::string, std::pair<ItemInfo, int>> Inventory;
+	std::map<std::string, std::pair<ItemInfo, int>> Inventory;	// 인벤토리 맵
 };
 
