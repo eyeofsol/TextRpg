@@ -10,9 +10,11 @@ TextRPG.Ver2 기준입니다.
 
 3. 클래스 다이어그램
 <img width="1411" height="1124" alt="TextRpg_Class" src="https://github.com/user-attachments/assets/83b2c9f1-f080-4bf3-80ee-456ae810d587" />
+
 ****클래스 및 인터페이스****
 1) GameManager
    게임의 기본적인 진행을 관리하는 클래스
+
 **변수**
 - Map : Map 객체를 가져오는 변수
 - Stage : 진행한 스테이지를 저장하는 int형 변수
