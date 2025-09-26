@@ -12,7 +12,7 @@ void Actor::ApplyDamage(ICanBattle* InTarget)
 	if (GuardPlayer && GuardPlayer->CheckGuard())
 		Damage /= 2.0f;
 	Player* AttackPlayer = dynamic_cast<Player*>(this);
-	if (AttackPlayer && AttackPlayer->CheckBerserker())
+	if (AttackPlayer && AttackPlayer->CheckBerserk())
 		Damage *= 2.0f;
 
 	InTarget->TakeDamage(Damage);	// Damage만큼 데미지 주기

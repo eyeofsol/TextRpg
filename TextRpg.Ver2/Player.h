@@ -55,7 +55,7 @@ public:
 
 	// 체크 및 Get,Set함수
 	inline bool CheckGuard() const { return IsGuard; }
-	inline bool CheckBerserker() const { return IsBerserk; }
+	inline bool CheckBerserk() const { return IsBerserk; }
 	inline int& GetGold() { return Gold; }
 	inline int& GetMana() { return Mana; }
 	inline Position& GetPosition() { return CurrentPosition; }
@@ -80,8 +80,8 @@ protected:
 	int Level = 1;	// 레벨
 	int Exp = 0;	// 경험치
 	int MaxExp = 30;	// 최대 경험치
-	int MaxMana = 50;	// 최대 마나
 	int Mana = MaxMana;	// 마나
+	int MaxMana = 50;	// 최대 마나
 
 	std::vector<SkillInfo> AllSkills;	// 스킬 벡터
 	bool IsGuard = false;	// 가드 여부

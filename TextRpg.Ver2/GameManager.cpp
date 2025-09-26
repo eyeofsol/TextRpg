@@ -346,7 +346,7 @@ void GameManager::BoxEvent(Player& Player)
 	}
 	else if (RandomItem < 25)	// 20%
 	{
-		RandomCount = rand() % 5 + 1;	// 아이템 개수 설정
+		RandomCount = rand() % 3 + 2;	// 아이템 개수 설정
 		printf("HP 소형 물약을 %d개 발견하였습니다.\n\n",RandomCount);
 		for (int i = 0; i < RandomCount; i++)
 			Player.AddItem(ItemInfo::MakeHPItem("HP 소형 물약", "HP를 10 회복합니다.", 10, 10.0f));
@@ -367,7 +367,7 @@ void GameManager::BoxEvent(Player& Player)
 	}
 	else
 	{
-		RandomCount = rand() % 100;
+		RandomCount = rand() % 70 + 30;
 		printf("골드를 %d원 발견하였습니다.\n", RandomCount);
 		Player.AddGold(RandomCount);
 	}

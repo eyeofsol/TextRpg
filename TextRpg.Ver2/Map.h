@@ -67,8 +67,8 @@ public:
 	inline int GetMaze(int InX,int InY) { return Maze[InX][InY]; }
 private:
 
-	static constexpr int MAX = 51;	// 최대 미로 크기
-	int Maze[MAX][MAX];	// 미로 구조체
+	static constexpr int MaxSize = 51;	// 최대 미로 크기
+	int Maze[MaxSize][MaxSize];	// 미로 구조체
 	int Width = 20, Height = 10;	// 너비, 높이
 
 	// 방향(상, 하, 좌, 우)
